@@ -1,0 +1,6 @@
+name: PureChatX
+main: PureChatX\Main
+version: 1.0.0
+api: 5.0.0
+author: AntonioGabriel
+description: Chat com TAG automática estilo PureChat
