@@ -9,16 +9,35 @@ use pocketmine\event\player\PlayerChatEvent;
 class Main extends PluginBase implements Listener {
 
     protected function onEnable(): void {
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->saveDefaultConfig();
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
-    public function onChat(PlayerChatEvent $event): void {
+    public function onPlayerChat(PlayerChatEvent $event): void {
         $player = $event->getPlayer();
-        $msg = $event->getMessage();
+        $message = $event->getMessage();
+        $groups = $this->getConfig()->getAll();
 
-        // Tag simples (depois ligamos com grupos)
-        $tag = "VIP";
-        $event->setFormat("§6[$tag] §f{$player->getName()}: §e$msg");
+        foreach ($groups as $group) {
+            if (isset($group["permission"]) && $player->hasPermission($group["permission"])) {
+
+                $tag = $group["tag"] ?? "";
+                $color = $group["message-color"] ?? "§f";
+
+                // PMMP 5 way
+                $event->setPrefix($tag . " §f" . $player->getName() . " §7» ");
+                $event->setMessage($color . $message);
+                return;
+            }
+        }
+
+        // Fallback Player
+        if (isset($groups["Player"])) {
+            $tag = $groups["Player"]["tag"] ?? "";
+            $color = $groups["Player"]["message-color"] ?? "§f";
+
+            $event->setPrefix($tag . " §f" . $player->getName() . " §7» ");
+            $event->setMessage($color . $message);
+        }
     }
 }
