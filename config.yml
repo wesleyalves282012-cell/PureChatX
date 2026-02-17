@@ -1,0 +1,26 @@
+format: "{tag} §f{name} §7» {message}"
+
+groups:
+  Dono:
+    permission: chat.dono
+    tag: "§4Dono"
+    message-color: "§f"
+
+  Admin:
+    permission: chat.admin
+    tag: "§cAdmin"
+    message-color: "§f"
+
+  Mod:
+    permission: chat.mod
+    tag: "§bMod"
+    message-color: "§f"
+
+  VIP:
+    permission: chat.vip
+    tag: "§6VIP"
+    message-color: "§f"
+
+  Player:
+    tag: "§7Player"
+    message-color: "§f"
