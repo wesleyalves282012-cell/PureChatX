@@ -5,6 +5,8 @@ namespace PureChatX;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
+use pocketmine\player\Player;
+use pocketmine\utils\TextFormat;
 
 class Main extends PluginBase implements Listener {
 
@@ -17,28 +19,25 @@ class Main extends PluginBase implements Listener {
         $player = $event->getPlayer();
         $groups = $this->getConfig()->getAll();
 
+        $tag = "";
+        $color = TextFormat::WHITE;
+
         foreach ($groups as $group) {
-            if (!isset($group["permission"])) {
+            if (!is_array($group)) {
                 continue;
             }
 
-            if ($player->hasPermission($group["permission"])) {
+            if (isset($group["permission"]) && $player->hasPermission($group["permission"])) {
                 $tag = $group["tag"] ?? "";
-                $color = $group["message-color"] ?? "§f";
-
-                $event->setPrefix($tag . " §f" . $player->getName() . " §7» ");
-                $event->setMessage($color . $event->getMessage());
-                return;
+                $color = $group["message-color"] ?? TextFormat::WHITE;
+                break;
             }
         }
 
-        // Player padrão
-        if (isset($groups["Player"])) {
-            $tag = $groups["Player"]["tag"] ?? "";
-            $color = $groups["Player"]["message-color"] ?? "§f";
-
-            $event->setPrefix($tag . " §f" . $player->getName() . " §7» ");
-            $event->setMessage($color . $event->getMessage());
-        }
+        $event->setFormatter(function(Player $player, string $message) use ($tag, $color): string {
+            return $tag . TextFormat::WHITE . $player->getName() .
+                TextFormat::GRAY . " » " .
+                $color . $message;
+        });
     }
 }
